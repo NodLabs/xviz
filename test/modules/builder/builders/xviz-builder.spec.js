@@ -103,7 +103,7 @@ test('XVIZBuilder#multiple-poses', t => {
   t.end();
 });
 
-test.only('XVIZBuilder#links', t => {
+test('XVIZBuilder#links', t => {
   const builder = new XVIZBuilder();
 
   builder
