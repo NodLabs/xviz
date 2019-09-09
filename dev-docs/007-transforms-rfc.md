@@ -74,48 +74,7 @@ Today we have a special coordinate VEHICLE*RELATIVE, which will cause data to be
 relative to the /vehicle_pose Pose. With the more general solution provided by the \_links* field we
 can model any number of vehicles by creating a link to a defined Pose.
 
-Streams with a coordinate:
-
-- _IDENTITY_ would have any _links_ entries applied to the stream
-- _VEHICLE_RELATIVE_ would apply _links_ if an entry is found. If an entry is not found, then the
-  default pose _/vehicle_pose_ would be used
-- _GEOGRAPHIC_ would not apply _links_ as it already defines a coordinate frame
-- _DYNAMIC_ calls a function which has access to the internal stream state. This would include any
-  _links_ defined so it may use that data as desired.
-
-Of particular note is that the _VEHICLE_RELATIVE_ behavior makes it now possible to support multiple
-vehicles.
-
-2. Adding the _links_ field to the state_update message.
-
-A new object would be added to the streamset specification.
-
-- The field name would be _links_
-- The keys of the _links_ object would represent the target stream the link affects
-  - The target could be a _primitive_ stream or a _pose_ stream
-- The value of a key would be an object that contains an entry _source_pose_ which is a string that
-  names a _pose_ stream
-
-3. Remove the timestamp on the Pose
-
-This is an artifact of an earlier verion of XVIZ. Today the streamset defines the timestamp, with
-the pose timestamp being a fallback. This fallback should be removed and the field from pose
-removed.
-
-4. Mixing of links between message types
-
-Links and poses create connections between streams that is expected to span the various state_update
-message types.
-
-A common distinction is made between static and dynamic frames. An example would be a static
-reference frame defined as `/world_base` which defines the origin. We could then have a dynamic
-reference frame `/vehicle_pose` that is a moving platform relative to `/world_base`. Next we can
-define a static reference frame for a lidar sensor relative to `/vehicle_pose`.
-
-This creates a chain that is static frame -> dynamic frame -> static frame.
-
-In this chain, only the dynamic frame will be updated but that update would cascade to any data that
-references the final static frame.
+# Detailed Design
 
 1. Streams already have a _coordinate_ definition for stream metadata with the default value of
    _IDENTITY_. This definition interprets the data as meter offsets. A change to this definition
