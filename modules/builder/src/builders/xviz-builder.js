@@ -15,6 +15,7 @@
 // Note: XVIZ data structures use snake_case
 /* eslint-disable camelcase */
 import XVIZPoseBuilder from './xviz-pose-builder';
+import XVIZLinkBuilder from './xviz-link-builder';
 import XVIZPrimitiveBuilder from './xviz-primitive-builder';
 import XVIZFutureInstanceBuilder from './xviz-future-instance-builder';
 import XVIZUIPrimitiveBuilder from './xviz-ui-primitive-builder';
@@ -73,10 +74,19 @@ export default class XVIZBuilder {
       metadata: this.metadata,
       validator: this._validator
     });
+    this._linkBuilder = new XVIZLinkBuilder({
+      metadata: this.metadata,
+      validator: this._validator
+    });
   }
 
   pose(streamId = PRIMARY_POSE_STREAM) {
     this._streamBuilder = this._poseBuilder.stream(streamId);
+    return this._streamBuilder;
+  }
+
+  link(source, target) {
+    this._streamBuilder = this._linkBuilder.stream(target).source(source);
     return this._streamBuilder;
   }
 
@@ -131,6 +141,7 @@ export default class XVIZBuilder {
     const variables = this._variablesBuilder.getData();
     const timeSeries = this._timeSeriesBuilder.getData();
     const uiPrimitives = this._uiPrimitivesBuilder.getData();
+    const links = this._linkBuilder.getData();
 
     const data = {
       timestamp: poses[PRIMARY_POSE_STREAM].timestamp,
@@ -151,6 +162,9 @@ export default class XVIZBuilder {
     }
     if (uiPrimitives) {
       data.ui_primitives = uiPrimitives;
+    }
+    if (links) {
+      data.links = links;
     }
 
     const message = {
