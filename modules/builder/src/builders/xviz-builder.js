@@ -46,6 +46,8 @@ export default class XVIZBuilder {
     this.metadata = metadata;
     this.disableStreams = disableStreams;
 
+    this.updateType = 'SNAPSHOT';
+
     // Current streamBuilder
     this._streamBuilder = null;
 
@@ -78,6 +80,10 @@ export default class XVIZBuilder {
       metadata: this.metadata,
       validator: this._validator
     });
+  }
+
+  persistent() {
+    this.updateType = 'PERSISTENT';
   }
 
   pose(streamId = PRIMARY_POSE_STREAM) {
@@ -168,7 +174,7 @@ export default class XVIZBuilder {
     }
 
     const message = {
-      update_type: 'SNAPSHOT',
+      update_type: this.updateType,
       updates: [data]
     };
 

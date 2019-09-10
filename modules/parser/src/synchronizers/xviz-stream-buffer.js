@@ -70,7 +70,7 @@ export default class XVIZStreamBuffer {
    * @property {number} the count of timeslices in buffer
    */
   get size() {
-    return this.timeslices.length;
+    return this.timeslices.length + this.persistent.length;
   }
 
   /**
@@ -140,6 +140,7 @@ export default class XVIZStreamBuffer {
    * @returns {object | null} - {start, end} timestamps if any timeslice is loaded
    */
   getLoadedTimeRange() {
+    // TODO what about persistent?
     const {timeslices} = this;
     const len = timeslices.length;
 
@@ -295,6 +296,7 @@ export default class XVIZStreamBuffer {
    *                 if the time range is satisfied
    */
   hasBuffer(fromTime, toTime) {
+    // TODO: persistent
     if (!this.timeslices.length) {
       return true;
     }
