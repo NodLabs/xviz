@@ -31,7 +31,8 @@ export class XVIZBaseReader {
 
   readMetadata() {
     if (this.source) {
-      return this.source.readSync(this._xvizMessage(1));
+      const data = this.source.readSync(this._xvizMessage(1));
+      return data;
     }
 
     return undefined;
@@ -113,9 +114,9 @@ export class XVIZBaseReader {
 
   // Support various formatted message names
   _xvizMessage(index) {
-    if (index === 0) {
+    if (index === 0 || index === 1) {
       // index file is always json
-      return `0-frame.json`;
+      return `${index}-frame.json`;
     }
 
     return `${index}${this.suffix}`;
